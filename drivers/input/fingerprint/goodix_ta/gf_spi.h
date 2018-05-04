@@ -55,6 +55,8 @@ struct gf_device {
 
 	unsigned users;
 	int irq;
+
+	struct task_struct *process;
 };
 
 void sendnlmsg(char *message);
