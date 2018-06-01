@@ -852,20 +852,20 @@
 				= <1600000 1400000 1200000 1000000 900000 900000 550000>;
 };
 &pmi8998_fg {
-        qcom,fg-force-load-profile;
-        qcom,fg-sys-term-current = <(-300)>;
-        qcom,fg-chg-term-current = <200>;
-        qcom,fg-auto-recharge-soc;
-        qcom,fg-recharge-soc-thr = <99>;
-        qcom,fg-cutoff-voltage = <3400>;
-        qcom,fg-empty-voltage = <3100>;
-	qcom,fg-cutoff-current = <200>;
-        qcom,fg-jeita-hyst-temp = <0>;
-        qcom,fg-jeita-thresholds = <0 15 45 58>;
-        qcom,fg-esr-clamp-mohms = <60>;
-        qcom,fg-batt-temp-delta = <6>;
-	qcom,slope-limit-temp-threshold = <100>;
+	qcom,fg-force-load-profile;
+	qcom,fg-sys-term-current = <(-300)>;
+	qcom,fg-chg-term-current = <200>;
+	qcom,fg-auto-recharge-soc;
+	qcom,fg-recharge-soc-thr = <99>;
+	qcom,fg-cutoff-voltage = <3400>;
+	qcom,fg-empty-voltage = <3100>;
+	qcom,fg-jeita-hyst-temp = <0>;
+	qcom,fg-jeita-thresholds = <0 15 45 60>;
+	qcom,fg-esr-clamp-mohms = <60>;
+	qcom,fg-batt-temp-delta = <6>;
+       qcom,slope-limit-temp-threshold = <100>;
 	qcom,slope-limit-coeffs = <10 11 12 13>;
+	qcom,linearize-soc;
 };
 /{
 	mtp_batterydata: qcom,battery-data {

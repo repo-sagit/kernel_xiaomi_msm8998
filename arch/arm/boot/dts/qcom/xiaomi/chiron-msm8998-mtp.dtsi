@@ -829,6 +829,7 @@
 	qcom,fg-batt-temp-delta = <6>;
 	qcom,slope-limit-temp-threshold = <100>;
 	qcom,slope-limit-coeffs = <10 11 12 13>;
+  qcom,linearize-soc;
 };
 /{
 	mtp_batterydata: qcom,battery-data {
