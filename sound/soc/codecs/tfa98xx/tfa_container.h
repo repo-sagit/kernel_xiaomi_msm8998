@@ -44,7 +44,7 @@ void individual_calibration_results(Tfa98xx_handle_t handle);
  * @param dsc pointer to nxpTfa descriptor
  * @return descriptor string
  */
-char *tfaContGetString(nxpTfaDescPtr_t *dsc); //TODO
+char *tfaContGetString(nxpTfaDescPtr_t *dsc);
 
 /**
  * Gets the string for the given command type number
@@ -325,7 +325,7 @@ nxpTfaLiveDataList_t *tfaContNextLiveData(nxpTfaLiveDataList_t *livedata_idx);
  * @param bf bitfield to write
  * @return Tfa98xx_Error
  */
-enum Tfa98xx_Error tfaRunWriteBitfield(Tfa98xx_handle_t dev_idx,  nxpTfaBitfield_t bf);//TODO move to run core
+enum Tfa98xx_Error tfaRunWriteBitfield(Tfa98xx_handle_t dev_idx,  nxpTfaBitfield_t bf);
 
 /**
  * Write a parameter file to the device

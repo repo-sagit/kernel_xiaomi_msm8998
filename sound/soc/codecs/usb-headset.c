@@ -2,7 +2,7 @@
  *  USB analog headset driver
  *
  *  Copyright (c) 2016 WangNannan <wangnannan@xiaomi.com>
- *  Copyright (C) 2017 XiaoMi, Inc.
+ *  Copyright (C) 2019 XiaoMi, Inc.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
 #define DEBUG
 #include <linux/delay.h>
 #include <linux/platform_device.h>
@@ -206,7 +205,14 @@ static int usbhs_parse_dt(struct device *dev, struct usb_headset *usbhs)
 
 	usbhs->asel_gpio = of_get_named_gpio_flags(np, "qcom,asel-gpio",
 					0, &usbhs->asel_flags);
+    pr_info("usbhs_parse_dt: get_hw_version_platform=%d\n", get_hw_version_platform());
 	switch (get_hw_version_platform()) {
+	case HARDWARE_PLATFORM_CENTAUR:
+		if (get_hw_version_major() <= 1) {
+			usbhs->asel_gpio = of_get_named_gpio_flags(np, "qcom,asel-p1-gpio",
+							0, &usbhs->asel_flags);
+		}
+		break;
 	case HARDWARE_PLATFORM_CHIRON:
 	case HARDWARE_PLATFORM_CHIRON_S:
 		if ((get_hw_version_major() == 1) &&

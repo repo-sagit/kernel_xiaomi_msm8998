@@ -16,9 +16,9 @@
 	(See Linux kernel documentation: Documentation/i2c/writing-clients)
 */
 #define MAX_I2C_BUFFER_SIZE 65536
-#define TFA98XX_FLAG_TDM_DEVICE	(1 << 10)
+#define TFA98XX_FLAG_TDM_DEVICE         (1 << 10)
 /* max. length of a alsa mixer control name */
-#define MAX_CONTROL_NAME	48
+#define MAX_CONTROL_NAME        48
 
 /* dbgprint.h */
 #define PRINT(fmt) "%s: " fmt, __func__
@@ -26,7 +26,7 @@
 #define _ASSERT(e)
 #define PRINT_ASSERT(e)if ((e)) printk(KERN_ERR "PrintAssert:%s (%s:%d) error code:%d\n", __FUNCTION__, __FILE__, __LINE__, e)
 
-#define TFA98XX_MAX_REGISTER	0xff
+#define TFA98XX_MAX_REGISTER              0xff
 
 #define TFA98XX_FLAG_DSP_START_ON_MUTE	(1 << 0)
 #define TFA98XX_FLAG_SKIP_INTERRUPTS	(1 << 1)
@@ -49,10 +49,10 @@ enum tfa98xx_dsp_init_state {
 };
 
 enum tfa98xx_dsp_fw_state {
-	TFA98XX_DSP_FW_NONE = 0,
-	TFA98XX_DSP_FW_PENDING,
-	TFA98XX_DSP_FW_FAIL,
-	TFA98XX_DSP_FW_OK,
+       TFA98XX_DSP_FW_NONE = 0,
+       TFA98XX_DSP_FW_PENDING,
+       TFA98XX_DSP_FW_FAIL,
+       TFA98XX_DSP_FW_OK,
 };
 
 struct tfa98xx_firmware {

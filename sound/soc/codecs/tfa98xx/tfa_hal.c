@@ -1,5 +1,6 @@
 /*
  *Copyright 2015 NXP Semiconductors
+ *Copyright (C) 2019 XiaoMi, Inc.
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -28,14 +29,14 @@
 static enum Tfa98xx_Error tfa98xx_classify_i2c_error(enum NXP_I2C_Error i2c_error)
 {
 	switch (i2c_error) {
-	case NXP_I2C_Ok:
-		return Tfa98xx_Error_Ok;
-	case NXP_I2C_NoAck:
-	case NXP_I2C_ArbLost:
-	case NXP_I2C_TimeOut:
-		return Tfa98xx_Error_I2C_NonFatal;
-	default:
-		return Tfa98xx_Error_I2C_Fatal;
+		case NXP_I2C_Ok:
+			return Tfa98xx_Error_Ok;
+		case NXP_I2C_NoAck:
+		case NXP_I2C_ArbLost:
+		case NXP_I2C_TimeOut:
+			return Tfa98xx_Error_I2C_NonFatal;
+		default:
+			return Tfa98xx_Error_I2C_Fatal;
 	}
 }
 /*

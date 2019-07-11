@@ -2,7 +2,7 @@
  * tfa98xx.c   tfa98xx codec module
  *
  * Copyright (c) 2015 NXP Semiconductors
- * Copyright (C) 2017 XiaoMi, Inc.
+ * Copyright (C) 2019 XiaoMi, Inc.
  *
  *  Author: Sebastien Jan <sjan@baylibre.com>
  *

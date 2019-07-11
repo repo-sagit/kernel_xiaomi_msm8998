@@ -93,7 +93,7 @@ enum tfa_fw_event { /* not all available on each device */
 #define TFA2_MAX_PARAM_SIZE (507*3) /* TFA2 */
 #define TFA1_MAX_PARAM_SIZE (145*3) /* TFA1 */
 
-#define ROUND_DOWN(a, n) (((a)/(n))*(n))
+#define ROUND_DOWN(a,n) (((a)/(n))*(n))
 
 /* feature bits */
 #define FEATURE1_TCOEF 0x100 /* bit8 set means tCoefA expected */
@@ -107,13 +107,13 @@ enum tfa_fw_event { /* not all available on each device */
 #define TFA2_FW_XMEM_CMD_COUNT			520
 
 /* note that the following defs rely on the handle variable */
-#define TFA_FW_XMEM_CALIBRATION_DONE 	TFA_FAM_FW(handle, XMEM_CALIBRATION_DONE)
-#define TFA_FW_XMEM_COUNT_BOOT 			TFA_FAM_FW(handle, XMEM_COUNT_BOOT)
-#define TFA_FW_XMEM_CMD_COUNT 			TFA_FAM_FW(handle, XMEM_CMD_COUNT)
+#define TFA_FW_XMEM_CALIBRATION_DONE 	TFA_FAM_FW(handle,XMEM_CALIBRATION_DONE)
+#define TFA_FW_XMEM_COUNT_BOOT 			TFA_FAM_FW(handle,XMEM_COUNT_BOOT)
+#define TFA_FW_XMEM_CMD_COUNT 			TFA_FAM_FW(handle,XMEM_CMD_COUNT)
 
 #define TFA2_FW_ReZ_SCALE             	65536
 #define TFA1_FW_ReZ_SCALE             	16384
-#define TFA_FW_ReZ_SCALE              	TFA_FAM_FW(handle, ReZ_SCALE)
+#define TFA_FW_ReZ_SCALE              	TFA_FAM_FW(handle,ReZ_SCALE)
 
 
 #endif /* TFA98XX_INTERNALS_H */

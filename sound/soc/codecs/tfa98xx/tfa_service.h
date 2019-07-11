@@ -1,5 +1,6 @@
 /*
  *Copyright 2015 NXP Semiconductors
+ *Copyright (C) 2019 XiaoMi, Inc.
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -16,6 +17,9 @@
 
 #ifndef TFA_SERVICE_H
 #define TFA_SERVICE_H
+
+
+
 
 #ifdef __KERNEL__
 #include <linux/types.h>
@@ -39,6 +43,7 @@ extern "C" {
 #define LSMODEL_MAX_WORDS            150
 #define TFA98XX_MAXTAG              (138)
 #define FW_VAR_API_VERSION          (521)
+
 
 #define fs_IDX                128
 #define leakageFactor_IDX     130
@@ -147,13 +152,13 @@ enum Tfa98xx_Error {
  * Type containing all the possible msg returns DSP can give
  */
 enum Tfa98xx_Status_ID {
-	Tfa98xx_DSP_Not_Running = -1,           /* No response from DSP */
-	Tfa98xx_I2C_Req_Done = 0,               /* Request executed correctly and result, if any, is available for download */
-	Tfa98xx_I2C_Req_Busy = 1,               /* Request is being processed, just wait for result */
+	Tfa98xx_DSP_Not_Running = -1,	   /* No response from DSP */
+	Tfa98xx_I2C_Req_Done = 0,	       /* Request executed correctly and result, if any, is available for download */
+	Tfa98xx_I2C_Req_Busy = 1,	       /* Request is being processed, just wait for result */
 	Tfa98xx_I2C_Req_Invalid_M_ID = 2,       /* Provided M-ID does not fit in valid rang [0..2] */
 	Tfa98xx_I2C_Req_Invalid_P_ID = 3,       /* Provided P-ID isn�t valid in the given M-ID context */
-	Tfa98xx_I2C_Req_Invalid_CC = 4,         /* Invalid channel configuration bits (SC|DS|DP|DC) combination */
-	Tfa98xx_I2C_Req_Invalid_Seq = 5,        /* Invalid sequence of commands, in case the DSP expects some commands in a specific order */
+	Tfa98xx_I2C_Req_Invalid_CC = 4,	 /* Invalid channel configuration bits (SC|DS|DP|DC) combination */
+	Tfa98xx_I2C_Req_Invalid_Seq = 5,	/* Invalid sequence of commands, in case the DSP expects some commands in a specific order */
 	Tfa98xx_I2C_Req_Invalid_Param = 6,      /* Generic error */
 	Tfa98xx_I2C_Req_Buffer_Overflow = 7    /* I2C buffer has overflowed: host has sent too many parameters, memory integrity is not guaranteed */
 };
@@ -624,7 +629,7 @@ enum Tfa98xx_Error tfa_dsp_cmd_id_MBDrc_dynamics(Tfa98xx_handle_t handle,
  * @param biquad_index: 1-10 of the biquad that needs to be adressed
 */
 enum Tfa98xx_Error Tfa98xx_DspBiquad_Disable(Tfa98xx_handle_t handle,
-					int biquad_index);
+					   int biquad_index);
 
 /**
  * fill the calibration value as milli ohms in the struct
@@ -698,13 +703,13 @@ enum Tfa98xx_Error tfa98xx_read_data(Tfa98xx_handle_t handle,
  * @param data actual data to write
 */
 enum Tfa98xx_Error tfa98xx_write_data(Tfa98xx_handle_t handle,
-				unsigned char subaddress,
-				int num_bytes,
-				const unsigned char data[]);
+				  unsigned char subaddress,
+				  int num_bytes,
+				  const unsigned char data[]);
 
 enum Tfa98xx_Error tfa98xx_write_raw(Tfa98xx_handle_t handle,
-				int num_bytes,
-				const unsigned char data[]);
+				  int num_bytes,
+				  const unsigned char data[]);
 
 /* support for converting error codes into text */
 const char *tfa98xx_get_error_string(enum Tfa98xx_Error error);
@@ -738,7 +743,7 @@ enum Tfa98xx_DAI tfa98xx_get_device_dai(Tfa98xx_handle_t handle);
  * @param data output data as integer array
 */
 void tfa98xx_convert_bytes2data(int num_bytes, const unsigned char bytes[],
-				int data[]);
+			       int data[]);
 
 /**
  * Read a part of the dsp memory
@@ -749,7 +754,7 @@ void tfa98xx_convert_bytes2data(int num_bytes, const unsigned char bytes[],
  * @param bytes output data as unsigned char array
 */
 enum Tfa98xx_Error tfa98xx_dsp_get_memory(Tfa98xx_handle_t handle, int memoryType,
-				int offset, int length, unsigned char bytes[]);
+			  int offset, int length, unsigned char bytes[]);
 
 /**
  * Write a value to the dsp memory
@@ -760,12 +765,12 @@ enum Tfa98xx_Error tfa98xx_dsp_get_memory(Tfa98xx_handle_t handle, int memoryTyp
  * @param value the value to write to the dsp
 */
 enum Tfa98xx_Error tfa98xx_dsp_set_memory(Tfa98xx_handle_t handle, int memoryType,
-				int offset, int length, int value);
+			  int offset, int length, int value);
 
 enum Tfa98xx_Error tfa98xx_dsp_write_config(Tfa98xx_handle_t handle, int length, const unsigned char *p_config_bytes);
 enum Tfa98xx_Error tfa98xx_dsp_write_drc(Tfa98xx_handle_t handle, int length, const unsigned char *p_drc_bytes);
 
-/* TODO define */
+
 /**
  * write/read raw msg functions :
  * the buffer is provided in little endian format, each word occupying 3 bytes, length is in bytes.
@@ -889,7 +894,7 @@ uint16_t tfaContBfEnumAny(const char *name);
 #define TFA_READ_REG(dev_idx, fieldname) tfa_read_reg(dev_idx, TFA_FAM(dev_idx, fieldname))
 
 /* FOR CALIBRATION RETRIES */
-#define TFA98XX_API_WAITRESULT_NTRIES 3000 /* defined in API */
+#define TFA98XX_API_WAITRESULT_NTRIES 3000
 
 /**
  * run the startup/init sequence and set ACS bit
