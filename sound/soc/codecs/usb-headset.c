@@ -205,14 +205,7 @@ static int usbhs_parse_dt(struct device *dev, struct usb_headset *usbhs)
 
 	usbhs->asel_gpio = of_get_named_gpio_flags(np, "qcom,asel-gpio",
 					0, &usbhs->asel_flags);
-    pr_info("usbhs_parse_dt: get_hw_version_platform=%d\n", get_hw_version_platform());
 	switch (get_hw_version_platform()) {
-	case HARDWARE_PLATFORM_CENTAUR:
-		if (get_hw_version_major() <= 1) {
-			usbhs->asel_gpio = of_get_named_gpio_flags(np, "qcom,asel-p1-gpio",
-							0, &usbhs->asel_flags);
-		}
-		break;
 	case HARDWARE_PLATFORM_CHIRON:
 	case HARDWARE_PLATFORM_CHIRON_S:
 		if ((get_hw_version_major() == 1) &&
