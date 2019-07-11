@@ -1,5 +1,5 @@
 /* Copyright (c) 2015, The Linux Foundation. All rights reserved.
- * Copyright (C) 2018 XiaoMi, Inc.
+ * Copyright (C) 2019 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -70,6 +70,10 @@
 				05 01 00 00 96 00 02 10 00];
 		qcom,mdss-dsi-on-command-state = "dsi_lp_mode";
 		qcom,mdss-dsi-off-command-state = "dsi_hs_mode";
+		qcom,mdss-dsi-displayoff-command = [05 01 00 00 16 00 02 28 00];
+		qcom,mdss-dsi-displayon-command = [05 01 00 00 14 00 02 29 00];
+		qcom,mdss-dsi-displayoff-command-state = "dsi_hs_mode";
+		qcom,mdss-dsi-displayon-command-state = "dsi_hs_mode";
 		qcom,mdss-dsi-h-sync-pulse = <1>;
 		qcom,mdss-dsi-traffic-mode = "burst_mode";
 		qcom,mdss-dsi-bllp-eof-power-mode;
@@ -96,21 +100,21 @@
 		qcom,mdss-panel-on-dimming-delay = <120>;
 		qcom,dispparam-enabled;
 		qcom,mdss-night-brightness = <7 25 43 61>;
-		qcom,mdss-dsi-dispparam-cabcon-command = [15 01 00 00 00 00 02 55 02];
+		qcom,mdss-dsi-dispparam-cabcon-command = [15 01 00 00 00 00 02 55 02]; //still mode
 		qcom,mdss-dsi-dispparam-cabcguion-command = [15 01 00 00 01 00 02 55 01];
 		qcom,mdss-dsi-dispparam-cabcstillon-command = [15 01 00 00 01 00 02 55 02];
 		qcom,mdss-dsi-dispparam-cabcmovieon-command = [15 01 00 00 01 00 02 55 03];
 		qcom,mdss-dsi-dispparam-cabcoff-command = [
-				39 01 00 00 01 00 02 55 00
-		];
+			39 01 00 00 01 00 02 55 00
+			];
 		qcom,mdss-dsi-dispparam-dimmingon-command = [
-				39 01 00 00 01 00 02 53 2C
-		];
+			39 01 00 00 01 00 02 53 2C
+			];
 		qcom,mdss-dsi-dispparam-idleon-command = [
-				39 01 00 00 01 00 02 39 00
-		];
+			39 01 00 00 01 00 02 39 00
+			];
 		qcom,mdss-dsi-dispparam-idleoff-command = [
-				39 01 00 00 01 00 02 38 00
-		];
+			39 01 00 00 01 00 02 38 00
+			];
 	};
 };

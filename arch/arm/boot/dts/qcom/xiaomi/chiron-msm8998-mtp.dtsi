@@ -1,5 +1,5 @@
 /* Copyright (c) 2016, The Linux Foundation. All rights reserved.
- * Copyright (C) 2018 XiaoMi, Inc.
+ * Copyright (C) 2019 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -12,33 +12,19 @@
  */
 
 #include <dt-bindings/interrupt-controller/irq.h>
-#include "../msm8998-pinctrl.dtsi"
 #include "msm8998-pinctrl.dtsi"
-#include "msm-pm8998.dtsi"
-#include "msm-pmi8998.dtsi"
-#include "msm8998-regulator.dtsi"
-#include "msm8998-camera.dtsi"
-#include "../msm8998-mdss-panels.dtsi"
-#include "msm8998-mdss-panels.dtsi"
-#include "msm8998-blsp.dtsi"
-#include "msm8998-audio.dtsi"
-#include "msm8998-mdss.dtsi"
-
 #include "chiron-camera-sensor-mtp.dtsi"
-
 / {
 	bluetooth: bt_wcn3990 {
 		compatible = "qca,wcn3990";
-
-		clock-names = "rf_clk2";
-		clocks = <&clock_gcc clk_rf_clk2_pin>;
-
 		qca,bt-vdd-io-supply = <&pm8998_s3>;
 		qca,bt-vdd-xtal-supply = <&pm8998_s5>;
 		qca,bt-vdd-core-supply = <&pm8998_l7>;
 		qca,bt-vdd-pa-supply = <&pm8998_l17>;
 		qca,bt-vdd-ldo-supply = <&pm8998_l25>;
 		qca,bt-chip-pwd-supply = <&pmi8998_bob_pin1>;
+		clocks = <&clock_gcc clk_rf_clk2_pin>;
+		clock-names = "rf_clk2";
 
 		qca,bt-vdd-io-voltage-level = <1352000 1352000>;
 		qca,bt-vdd-xtal-voltage-level = <2040000 2040000>;
@@ -67,7 +53,6 @@
 	vdda-pll-max-microamp = <14600>;
 	vddp-ref-clk-max-microamp = <100>;
 	vddp-ref-clk-always-on;
-
 	status = "ok";
 };
 
@@ -80,7 +65,6 @@
 	vcc-max-microamp = <750000>;
 	vccq-max-microamp = <560000>;
 	vccq2-max-microamp = <750000>;
-
 	status = "ok";
 };
 
@@ -111,10 +95,9 @@
 };
 
 &uartblsp2dm1 {
+	status = "ok";
 	pinctrl-names = "default";
 	pinctrl-0 = <&uart_console_active>;
-
-	status = "ok";
 };
 
 &pm8998_gpios {
@@ -148,8 +131,7 @@
 		qcom,out-strength = <1>;
 	};
 
-	/* GPIO 13 */
-	gpio@cc00 {
+	gpio@cc00 { /* GPIO 13 */
 		qcom,mode = <1>;
 		qcom,output-type = <0>;
 		qcom,pull = <5>;
@@ -185,10 +167,10 @@
 	gpio@c400 {
 		status = "okay";
 		qcom,mode = <1>;         /* QPNP_PIN_MODE_DIG_OUT */
-		qcom,pull = <4>;         /* PULL DOWN 10uA */
-		qcom,src-sel = <2>;      /* SPECIAL FUNCTION 1 */
-		qcom,master-en = <1>;    /* ENABLE GPIO */
-		qcom,out-strength = <2>; /* Medium strength current */
+		qcom,pull = <4>;                        /*PULL DOWN 10uA*/
+		qcom,src-sel = <2>;             /*SPECIAL FUNCTION 1*/
+		qcom,master-en = <1>;           /*ENABLE GPIO*/
+		qcom,out-strength = <2>;        /*Medium strength current*/
 	};
 
 	/* GPIO 6 for the internal QNOVO discharge FET control signal */
@@ -208,24 +190,13 @@
 	synaptics_dsi_i2c@20 {
 		compatible = "synaptics,dsx-i2c-force";
 		reg = <0x20>;
-
 		interrupt-parent = <&tlmm>;
 		interrupts = <125 0x2008>;
-
 		vdd-supply = <&pm8998_l6>;
 		lab-supply = <&lab_regulator>;
 		ibb-supply = <&ibb_regulator>;
 		disp-supply = <&pm8998_l14>;
 		avdd-supply = <&disp_vddts_vreg>;
-
-		pinctrl-names = "pmx_ts_active", "pmx_ts_suspend";
-		pinctrl-0 = <&ts_active>;
-		pinctrl-1 = <&ts_int_suspend &ts_reset_suspend>;
-
-		clock-names = "iface_clk", "core_clk";
-		clocks = <&clock_gcc clk_gcc_blsp1_ahb_clk>,
-			 <&clock_gcc clk_gcc_blsp1_qup5_i2c_apps_clk>;
-
 		synaptics,pwr-reg-name = "vdd";
 		synaptics,lab-reg-name = "lab";
 		synaptics,ibb-reg-name = "ibb";
@@ -233,6 +204,9 @@
 		synaptics,bus-reg-name = "avdd";
 		synaptics,disp-power-hold;
 		synaptics,ub-i2c-addr = <0x2c>;
+		pinctrl-names = "pmx_ts_active", "pmx_ts_suspend";
+		pinctrl-0 = <&ts_active>;
+		pinctrl-1 = <&ts_int_suspend &ts_reset_suspend>;
 		synaptics,mdss-dsi-reset = <&tlmm 8 0>;
 		synaptics,reset-gpio = <&tlmm 89 0x00>;
 		synaptics,irq-gpio = <&tlmm 125 0x2008>;
@@ -249,34 +223,57 @@
 		synaptics,panel-is-incell;
 		synaptics,short-jdi-25 = "000: 0xff\n001: 0xff\n002: 0xff\n003: 0xf7\n004: 0x03\n005: 0x00\n006: 0x00";
 		synaptics,short-jdi-26 = "000: 0x03\n001: 0x00\n002: 0x00\n003: 0x00\n004: 0x03\n005: 0x00\n006: 0x00";
+		clock-names = "iface_clk", "core_clk";
+		clocks = <&clock_gcc clk_gcc_blsp1_ahb_clk>,
+			 <&clock_gcc clk_gcc_blsp1_qup5_i2c_apps_clk>;
 		synaptics,guest-serialization-as-lockdown;
 		synaptics,tp-id-byte = /bits/ 8 <0>;
-
 		synaptics,config-array-size = <3>;
 		synaptics,cfg_1 {
 			synaptics,chip-id = <0>;
 			synaptics,chip-id-name = "S3330";
 			synaptics,tp-id = /bits/ 8 <0x31>;
-			synaptics,fw-name = "synaptics_jdi_3330_chiron.fw";
+			synaptics,fw-name = "synaptics_jdi_3330_d5.fw";
+		};
+		synaptics,cfg_2 {
+			synaptics,chip-id = <1>;
+			synaptics,chip-id-name = "S3331";
+			synaptics,tp-id = /bits/ 8 <0x31>;
+			//synaptics,fw-name = "synaptics_jdi_3331_c1.fw";
+		};
+		synaptics,cfg_3 {
+			synaptics,chip-id = <2>;
+			synaptics,chip-id-name = "TD4322";
+			synaptics,chip-is-tddi;
+			synaptics,disp-pre-on-sleep = <10>;
+			synaptics,disp-post-on-sleep = <10>;
+			synaptics,disp-pre-off-sleep = <10>;
+			synaptics,disp-post-off-sleep = <0>;
+			synaptics,lab-pre-on-sleep = <0>;
+			synaptics,lab-post-on-sleep = <10>;
+			synaptics,lab-pre-off-sleep = <10>;
+			synaptics,lab-post-off-sleep = <0>;
+			synaptics,ibb-pre-on-sleep = <0>;
+			synaptics,ibb-post-on-sleep = <10>;
+			synaptics,ibb-pre-off-sleep = <10>;
+			synaptics,ibb-post-off-sleep = <0>;
+			synaptics,tp-id = /bits/ 8 <0x34>;
+			//synaptics,fw-name = "synaptics_lgd_4322_c1.fw";
 		};
 	};
-
 	ft5x46_i2c@38 {
 		compatible = "ft,ft5x46_i2c";
 		reg = <0x38>;
-
 		interrupt-parent = <&tlmm>;
 		interrupts = <125 0x2008>;
-
 		vddio-supply = <&pm8998_l6>;
 		vdd-supply = <&pm8998_l14>;
 		lab-supply = <&lab_regulator>;
 		ibb-supply = <&ibb_regulator>;
-
+		/* pins used by touchscreen */
 		pinctrl-names = "pmx_ts_active","pmx_ts_suspend";
 		pinctrl-0 = <&ts_active>;
 		pinctrl-1 = <&ts_int_suspend &ts_reset_suspend>;
-
 		ft5x46_i2c,i2c-pull-up;
 		ft5x46_i2c,irqflags = <0x2008>;
 		ft5x46_i2c,x-max = <1080>;
@@ -295,7 +292,6 @@
 		ft5x46_i2c,open-max = <200>;
 		ft5x46_i2c,short-min = <200>;
 		ft5x46_i2c,short-max = <100000000>;
-
 		ft5x46_i2c,fw-delay-55-ms = <2>;
 		ft5x46_i2c,fw-delay-aa-ms = <2>;
 		ft5x46_i2c,fw-upgrade-id1 = <0xE7>;
@@ -307,7 +303,7 @@
 			ft5x46_i2c,vendor = <0x32>;
 			ft5x46_i2c,tp-vendor = <0x41>;
 			ft5x46_i2c,lcd-vendor = <0x37>;
-			ft5x46_i2c,fw-name = "ft8716_ebbg_incell_ebbg_chiron.fw";
+			ft5x46_i2c,fw-name = "ft8716_ebbg_incell_ebbg_d5.fw";
 			ft5x46_i2c,tx-num = <24>;
 			ft5x46_i2c,rx-num = <13>;
 		};
@@ -316,35 +312,40 @@
 
 &i2c_6 { /* BLSP1 QUP6 (NFC) */
 	status = "okay";
-
 	nq@28 {
 		compatible = "qcom,nq-nci";
 		reg = <0x28>;
-
-		interrupt-parent = <&tlmm>;
-		interrupts = <92 0>;
-		interrupt-names = "nfc_irq";
-
-		pinctrl-names = "nfc_active", "nfc_suspend";
-		pinctrl-0 = <&nfc_int_active &nfc_enable_active>;
-		pinctrl-1 = <&nfc_int_suspend &nfc_enable_suspend>;
-
-		clock-names = "ref_clk";
-		clocks = <&clock_gcc clk_ln_bb_clk3_pin>;
-
-		qcom,clk-src = "BBCLK3";
-
 		qcom,nq-irq = <&tlmm 92 0x00>;
 		qcom,nq-ven = <&tlmm 12 0x00>;
 		qcom,nq-firm = <&tlmm 93 0x00>;
 		qcom,nq-clkreq = <&pm8998_gpios 21 0x00>;
 		qcom,nq-esepwr = <&tlmm 116 0x00>;
-
+		interrupt-parent = <&tlmm>;
+		qcom,clk-src = "BBCLK3";
+		interrupts = <92 0>;
+		interrupt-names = "nfc_irq";
+		pinctrl-names = "nfc_active", "nfc_suspend";
+		pinctrl-0 = <&nfc_int_active &nfc_enable_active>;
+		pinctrl-1 = <&nfc_int_suspend &nfc_enable_suspend>;
+		clocks = <&clock_gcc clk_ln_bb_clk3_pin>;
+		clock-names = "ref_clk";
 	};
 };
 
 &mdss_hdmi_tx {
 	status = "disabled";
+	pinctrl-names = "hdmi_hpd_active", "hdmi_ddc_active", "hdmi_cec_active",
+				"hdmi_active", "hdmi_sleep";
+	pinctrl-0 = <&mdss_hdmi_5v_active  &mdss_hdmi_hpd_active
+			&mdss_hdmi_ddc_suspend &mdss_hdmi_cec_suspend>;
+	pinctrl-1 = <&mdss_hdmi_5v_active &mdss_hdmi_hpd_active
+			&mdss_hdmi_ddc_active &mdss_hdmi_cec_suspend>;
+	pinctrl-2 = <&mdss_hdmi_5v_active &mdss_hdmi_hpd_active
+			&mdss_hdmi_cec_active &mdss_hdmi_ddc_suspend>;
+	pinctrl-3 = <&mdss_hdmi_5v_active &mdss_hdmi_hpd_active
+			&mdss_hdmi_ddc_active &mdss_hdmi_cec_active>;
+	pinctrl-4 = <&mdss_hdmi_5v_suspend &mdss_hdmi_hpd_suspend
+			&mdss_hdmi_ddc_suspend &mdss_hdmi_cec_suspend>;
 };
 
 &mdss_hdmi_pll {
@@ -360,13 +361,12 @@
 };
 
 &mdss_dsi0 {
+	qcom,dsi-pref-prim-pan = <&dsi_jdi_fhd_nt35596s_video>;
 	pinctrl-names = "mdss_default", "mdss_sleep";
 	pinctrl-0 = <&mdss_dsi_active &mdss_te_active>;
 	pinctrl-1 = <&mdss_dsi_suspend &mdss_te_suspend>;
-
 	qcom,platform-reset-gpio = <&tlmm 94 0>;
 	qcom,platform-te-gpio = <&tlmm 10 0>;
-	qcom,dsi-pref-prim-pan = <&dsi_jdi_fhd_nt35596s_video>;
 };
 
 &mdss_dsi1 {
@@ -507,12 +507,18 @@
 };
 
 &pmi8998_haptics {
+	status = "okay";
 	qcom,wave-play-rate-us = <4878>;
 	qcom,vmax-mv = <2552>;
 	qcom,wave-shape = "sine";
 	qcom,brake-pattern = [03 02 00 00];
-
-	status = "okay";
+	qcom,disable_force_back_emf_delay;
+	qcom,vmax-overbrake-mv = <3596>;
+	qcom,brake-pattern-count = <4>;
+	qcom,brake-pattern-arry = [02 02 00 00
+	03 02 01 00
+	03 02 01 00
+	03 03 03 00];
 };
 
 &pm8998_vadc {
@@ -702,8 +708,8 @@
 	tas2559@4c{
 		compatible = "ti,tas2559";
 		reg = <0x4c>;
-
 		ti,tas2559-reset-gpio = <&tlmm 41 0>;
+		/*ti,tas2560-reset-gpio = <&tlmm 41 0>;*/
 		ti,tas2559-irq-gpio = <&tlmm 42 0>;
 		ti,tas2560-irq-gpio = <&tlmm 11 0>;
 		ti,tas2559-addr = <0x4c>;
@@ -713,7 +719,6 @@
 		ti,ycrc-enable = <1>;     /* 0, disable; non-zero, enable */
 		ti,echo-ref = <0>;        /* 0, left channel; 1, right channel; 2, both */
 		ti,bit-rate = <16>;       /* 16, 20, 24, 32 */
-
 		status = "ok";
 	};
 };
@@ -765,10 +770,15 @@
 		enable-active-high;
 	};
 
+	sn_fuse: snfuse@0x786134 {
+	    compatible = "qcom,sn-fuse";
+	    reg = <0x786134 0x4>;
+	    reg-names = "sn-base";
+	};
+
 	gpio_keys {
 		compatible = "gpio-keys";
 		input-name = "gpio-keys";
-
 		status = "okay";
 
 		vol_up {
@@ -790,6 +800,15 @@
 		};
 	};
 
+	gpio_rf {
+		pinctrl-names = "tlmm_gpio_rf_active","tlmm_gpio_rf_suspend";
+		pinctrl-0 = <&gpio_rf_active>;
+		pinctrl-1 = <&gpio_rf_suspend>;
+		compatible = "gpio_rf";
+		gpios = <&tlmm 119 0x01>;
+		debounce-interval = <15>;
+	};
+
 	qcom,msm-dai-mi2s {
 		dai_mi2s3: qcom,msm-dai-q6-mi2s-quat {
 			qcom,msm-mi2s-rx-lines = <1>;
@@ -803,14 +822,21 @@
 				     &quat_mi2s_sd1_sleep>;
 		};
 	};
+	pwm_ir {
+		compatible = "pwm-ir";
+		pwms = <&pmi8998_pwm_2 0 0>;
+	};
 
 	fingerprint_fpc {
+		status = "ok";
 		compatible = "fpc,fpc1020";
-
 		interrupt-parent = <&tlmm>;
 		interrupts = <121 0x0>;
-
+		fpc,gpio_rst    = <&tlmm 78 0x0>;
+		fpc,gpio_irq    = <&tlmm 121 0x0>;
 		vdd_ana-supply  = <&fp_d5_vdd_vreg>;
+		/* fpc,enable-on-boot; */
+		/* fpc,enable-wakeup; */
 
 		pinctrl-names = "fpc1020_reset_reset",
 			"fpc1020_reset_active",
@@ -819,27 +845,18 @@
 		pinctrl-0 = <&msm_gpio_78>;
 		pinctrl-1 = <&msm_gpio_78_output_high>;
 		pinctrl-2 = <&msm_gpio_121>;
-
-		fpc,gpio_rst    = <&tlmm 78 0x0>;
-		fpc,gpio_irq    = <&tlmm 121 0x0>;
-
-		status = "ok";
 	};
 
 	fingerprint_goodix {
 		compatible = "goodix,fingerprint";
-
+		fp-gpio-reset = <&tlmm 78 0>;
+		fp-gpio-irq = <&tlmm 121 0>;
 		pinctrl-names = "pmx_fp_active", "pmx_fp_suspend";
 		pinctrl-0 = <&fp_active>;
 		pinctrl-1 = <&fp_suspend>;
-
 		clock-names = "iface_clk", "core_clk";
 		clocks = <&clock_gcc clk_gcc_blsp2_ahb_clk>,
 			 <&clock_gcc clk_gcc_blsp2_qup6_spi_apps_clk>;
-
-		fp-gpio-reset = <&tlmm 78 0>;
-		fp-gpio-irq = <&tlmm 121 0>;
-
 		status = "ok";
 	};
 };
@@ -859,37 +876,49 @@
 	qcom,ovp-mv = <19600>;
 };
 
-&red_led { /* Notification LED */
+/* Red led was used for powersupply of White led */
+&red_led {
+	qcom,start-idx = <1>;
+	qcom,idx-len = <18>;
+	qcom,duty-pcts = [00 01 02 03 04 05 06 07 08
+			08 07 06 05 04 03 02 01 00];
+	qcom,lut-flags = <3>;
+	qcom,pause-lo = <0>;
+	qcom,pause-hi = <0>;
+	qcom,ramp-step-ms = <142>;
 	qcom,use-blink;
 	linux,name = "white";
 };
 
-&blue_led { /* Left button backlight */
+/* Blue led was used for powersupply of left button key backlight */
+&blue_led {
 	linux,name = "button-backlight";
 };
 
-&green_led { /* Right button backlight */
+/* Green led was used for powersupply of right button key backlight */
+&green_led {
 	linux,name = "button-backlight1";
 };
-
 &pmi8998_charger {
-	qcom,usb-icl-ua = <3000000>;
+	qcom,usb-icl-ua = <2700000>;
 	qcom,fcc-max-ua = <3300000>;
 	qcom,fcc-low-temp-delta = <2975000>;
 	qcom,fcc-hot-temp-delta = <1650000>;
 	qcom,fcc-cool-temp-delta = <2325000>;
 	qcom,auto-recharge-soc;
-
+/*
+	qcom,step-soc-thresholds = <60 70 80 90>;
+	qcom,step-current-deltas = <0 (-200000) (-300000) (-400000) (-500000)>;
+*/
 	qcom,thermal-mitigation
 				= <1800000 1600000 1400000 1200000 1000000 1000000 1000000>;
 	qcom,thermal-mitigation-dcp
 				= <1800000 1600000 1400000 1200000 1000000 1000000 1000000>;
 	qcom,thermal-mitigation-qc3
-				= <3000000 2425000 2125000 1825000 1525000 1225000 750000>;
+				= <2700000 2425000 2125000 1825000 1525000 1225000 750000>;
 	qcom,thermal-mitigation-qc2
 				= <1600000 1400000 1200000 1000000 900000 900000 550000>;
 };
-
 &pmi8998_fg {
 	qcom,fg-force-load-profile;
 	qcom,fg-sys-term-current = <(-300)>;
@@ -898,29 +927,49 @@
 	qcom,fg-recharge-soc-thr = <99>;
 	qcom,fg-cutoff-voltage = <3400>;
 	qcom,fg-empty-voltage = <3100>;
+	qcom,fg-cutoff-current = <200>;
 	qcom,fg-jeita-hyst-temp = <0>;
 	qcom,fg-jeita-thresholds = <0 15 45 60>;
 	qcom,fg-esr-clamp-mohms = <60>;
 	qcom,fg-batt-temp-delta = <6>;
+	qcom,slope-limit-temp-threshold = <100>;
+	qcom,slope-limit-coeffs = <10 11 12 13>;
 };
-
 /{
 	mtp_batterydata: qcom,battery-data {
 		qcom,batt-id-range-pct = <15>;
-		#include "batterydata-chiron-atl-3400mAh.dtsi"
-		#include "batterydata-chiron-cos-3400mAh.dtsi"
+		#include "batterydata-d5-atl-3400mAh.dtsi"
+		#include "batterydata-d5-cos-3400mAh.dtsi"
 		#include "batterydata-itech-3020mAh.dtsi"
+	};
+};
+
+&soc {
+	thermal-message {
+		thermal,batt-array-size = "8";
+		thermal,batt-level-screen-on = "0 1 2 3 4 5 6 7";
+		thermal,batt-level-screen-off = "0 1 2 3 4 5 6 7";
 	};
 };
 
 &qusb_phy0 {
 	qcom,qusb-phy-init-seq =
 			/* <value reg_offset> */
-			<0x80 0x0
-			0x13 0x04
-			0x7c 0x18c
-			0x80 0x2c
-			0x0a 0x184
-			0xf0 0x23c
-			0x0f 0x240>;
+				<0x80 0x0
+				0x13 0x04
+				0x7c 0x18c
+				0x80 0x2c
+				0x0a 0x184
+				0xf0 0x23c
+				0x0f 0x240>;
+};
+
+/* Blue led was used for powersupply of left button key backlight */
+&blue_led {
+	linux,name = "button-backlight";
+};
+
+/* Green led was used for powersupply of right button key backlight */
+&green_led {
+	linux,name = "button-backlight1";
 };

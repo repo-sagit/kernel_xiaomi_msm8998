@@ -1,5 +1,5 @@
 /* Copyright (c) 2016, The Linux Foundation. All rights reserved.
- * Copyright (C) 2018 XiaoMi, Inc.
+ * Copyright (C) 2019 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -12,33 +12,20 @@
  */
 
 #include <dt-bindings/interrupt-controller/irq.h>
-#include "../msm8998-pinctrl.dtsi"
 #include "msm8998-pinctrl.dtsi"
-#include "msm-pm8998.dtsi"
-#include "msm-pmi8998.dtsi"
-#include "msm8998-regulator.dtsi"
-#include "msm8998-camera.dtsi"
-#include "../msm8998-mdss-panels.dtsi"
-#include "msm8998-mdss-panels.dtsi"
-#include "msm8998-blsp.dtsi"
-#include "msm8998-audio.dtsi"
-#include "msm8998-mdss.dtsi"
-
 #include "sagit-camera-sensor-mtp.dtsi"
 
 / {
 	bluetooth: bt_wcn3990 {
 		compatible = "qca,wcn3990";
-
-		clock-names = "rf_clk2";
-		clocks = <&clock_gcc clk_rf_clk2_pin>;
-
 		qca,bt-vdd-io-supply = <&pm8998_s3>;
 		qca,bt-vdd-xtal-supply = <&pm8998_s5>;
 		qca,bt-vdd-core-supply = <&pm8998_l7>;
 		qca,bt-vdd-pa-supply = <&pm8998_l17>;
 		qca,bt-vdd-ldo-supply = <&pm8998_l25>;
 		qca,bt-chip-pwd-supply = <&pmi8998_bob_pin1>;
+		clocks = <&clock_gcc clk_rf_clk2_pin>;
+		clock-names = "rf_clk2";
 
 		qca,bt-vdd-io-voltage-level = <1352000 1352000>;
 		qca,bt-vdd-xtal-voltage-level = <2040000 2040000>;
@@ -67,7 +54,6 @@
 	vdda-pll-max-microamp = <14600>;
 	vddp-ref-clk-max-microamp = <100>;
 	vddp-ref-clk-always-on;
-
 	status = "ok";
 };
 
@@ -80,7 +66,6 @@
 	vcc-max-microamp = <750000>;
 	vccq-max-microamp = <560000>;
 	vccq2-max-microamp = <750000>;
-
 	status = "ok";
 };
 
@@ -111,10 +96,9 @@
 };
 
 &uartblsp2dm1 {
+	status = "ok";
 	pinctrl-names = "default";
 	pinctrl-0 = <&uart_console_active>;
-
-	status = "ok";
 };
 
 &pm8998_gpios {
@@ -148,8 +132,7 @@
 		qcom,out-strength = <1>;
 	};
 
-	/* GPIO 13 */
-	gpio@cc00 {
+	gpio@cc00 { /* GPIO 13 */
 		qcom,mode = <1>;
 		qcom,output-type = <0>;
 		qcom,pull = <5>;
@@ -196,10 +179,10 @@
 	gpio@c400 {
 		status = "okay";
 		qcom,mode = <1>;         /* QPNP_PIN_MODE_DIG_OUT */
-		qcom,pull = <4>;         /* PULL DOWN 10uA */
-		qcom,src-sel = <2>;      /* SPECIAL FUNCTION 1 */
-		qcom,master-en = <1>;    /* ENABLE GPIO */
-		qcom,out-strength = <2>; /* Medium strength current */
+		qcom,pull = <4>;                        /*PULL DOWN 10uA*/
+		qcom,src-sel = <2>;             /*SPECIAL FUNCTION 1*/
+		qcom,master-en = <1>;           /*ENABLE GPIO*/
+		qcom,out-strength = <2>;        /*Medium strength current*/
 	};
 
 	/* GPIO 6 for the internal QNOVO discharge FET control signal */
@@ -221,27 +204,20 @@
 		reg = <0x20>;
 		interrupt-parent = <&tlmm>;
 		interrupts = <125 0x2008>;
-
 		vdd-supply = <&pm8998_l6>;
 		lab-supply = <&lab_regulator>;
 		ibb-supply = <&ibb_regulator>;
 		disp-supply = <&pm8998_l14>;
 		avdd-supply = <&disp_vddts_vreg>;
-
-		pinctrl-names = "pmx_ts_active", "pmx_ts_suspend";
-		pinctrl-0 = <&ts_active>;
-		pinctrl-1 = <&ts_int_suspend &ts_reset_suspend>;
-
-		clock-names = "iface_clk", "core_clk";
-		clocks = <&clock_gcc clk_gcc_blsp1_ahb_clk>,
-			 <&clock_gcc clk_gcc_blsp1_qup5_i2c_apps_clk>;
-
 		synaptics,pwr-reg-name = "vdd";
 		synaptics,lab-reg-name = "lab";
 		synaptics,ibb-reg-name = "ibb";
 		synaptics,disp-reg-name = "disp";
 		synaptics,bus-reg-name = "avdd";
 		synaptics,ub-i2c-addr = <0x2c>;
+		pinctrl-names = "pmx_ts_active", "pmx_ts_suspend";
+		pinctrl-0 = <&ts_active>;
+		pinctrl-1 = <&ts_int_suspend &ts_reset_suspend>;
 		synaptics,mdss-dsi-reset = <&tlmm 8 0>;
 		synaptics,reset-gpio = <&tlmm 89 0x00>;
 		synaptics,irq-gpio = <&tlmm 125 0x2008>;
@@ -259,24 +235,24 @@
 		synaptics,cap-button-codes = <158 139 102>;
 		synaptics,short-jdi-25 = "000: 0xfb\n001: 0xef\n002: 0xff\n003: 0xff\n004: 0x18\n005: 0x00\n006: 0x00";
 		synaptics,short-jdi-26 = "000: 0x03\n001: 0x00\n002: 0x00\n003: 0x00\n004: 0x00\n005: 0x00\n006: 0x00";
+		clock-names = "iface_clk", "core_clk";
+		clocks = <&clock_gcc clk_gcc_blsp1_ahb_clk>,
+			 <&clock_gcc clk_gcc_blsp1_qup5_i2c_apps_clk>;
 		synaptics,guest-serialization-as-lockdown;
 		synaptics,tp-id-byte = /bits/ 8 <0>;
-
 		synaptics,config-array-size = <3>;
 		synaptics,cfg_1 {
 			synaptics,chip-id = <0>;
 			synaptics,chip-id-name = "S3330";
 			synaptics,tp-id = /bits/ 8 <0x31>;
-			synaptics,fw-name = "synaptics_jdi_3330_sagit.fw";
+			synaptics,fw-name = "synaptics_jdi_3330_c1.fw";
 		};
-
 		synaptics,cfg_2 {
 			synaptics,chip-id = <1>;
 			synaptics,chip-id-name = "S3331";
 			synaptics,tp-id = /bits/ 8 <0x31>;
-			synaptics,fw-name = "synaptics_jdi_3331_sagit.fw";
+			synaptics,fw-name = "synaptics_jdi_3331_c1.fw";
 		};
-
 		synaptics,cfg_3 {
 			synaptics,chip-id = <2>;
 			synaptics,chip-id-name = "TD4322";
@@ -324,43 +300,35 @@
 			synaptics,ibb-pre-off-sleep = <10>;
 			synaptics,ibb-post-off-sleep = <0>;
 			synaptics,tp-id = /bits/ 8 <0x34>;
-			synaptics,fw-name = "synaptics_lgd_4322_sagit.fw";
+			synaptics,fw-name = "synaptics_lgd_4322_c1.fw";
 		};
 	};
 };
 
 &i2c_6 { /* BLSP1 QUP6 (NFC) */
 	status = "okay";
-
 	nq@28 {
 		compatible = "qcom,nq-nci";
 		reg = <0x28>;
-
-		interrupt-parent = <&tlmm>;
-		interrupts = <92 0>;
-		interrupt-names = "nfc_irq";
-
-		pinctrl-names = "nfc_active", "nfc_suspend";
-		pinctrl-0 = <&nfc_int_active &nfc_enable_active>;
-		pinctrl-1 = <&nfc_int_suspend &nfc_enable_suspend>;
-
-		clock-names = "ref_clk";
-		clocks = <&clock_gcc clk_ln_bb_clk3_pin>;
-
-		qcom,clk-src = "BBCLK3";
-
 		qcom,nq-irq = <&tlmm 92 0x00>;
 		qcom,nq-ven = <&tlmm 12 0x00>;
 		qcom,nq-firm = <&tlmm 93 0x00>;
 		qcom,nq-clkreq = <&pm8998_gpios 21 0x00>;
 		qcom,nq-esepwr = <&tlmm 116 0x00>;
-
+		interrupt-parent = <&tlmm>;
+		qcom,clk-src = "BBCLK3";
+		interrupts = <92 0>;
+		interrupt-names = "nfc_irq";
+		pinctrl-names = "nfc_active", "nfc_suspend";
+		pinctrl-0 = <&nfc_int_active &nfc_enable_active>;
+		pinctrl-1 = <&nfc_int_suspend &nfc_enable_suspend>;
+		clocks = <&clock_gcc clk_ln_bb_clk3_pin>;
+		clock-names = "ref_clk";
 	};
 };
 
 &i2c_10 { /* BLSP2 QUP4 (Audio Smart Pa)*/
 	status = "okay";
-
 	tfa98xx@34 {
 		compatible = "nxp,tfa98xx";
 		reg = <0x34>;
@@ -372,6 +340,18 @@
 
 &mdss_hdmi_tx {
 	status = "disabled";
+	pinctrl-names = "hdmi_hpd_active", "hdmi_ddc_active", "hdmi_cec_active",
+				"hdmi_active", "hdmi_sleep";
+	pinctrl-0 = <&mdss_hdmi_5v_active  &mdss_hdmi_hpd_active
+			&mdss_hdmi_ddc_suspend &mdss_hdmi_cec_suspend>;
+	pinctrl-1 = <&mdss_hdmi_5v_active &mdss_hdmi_hpd_active
+			&mdss_hdmi_ddc_active &mdss_hdmi_cec_suspend>;
+	pinctrl-2 = <&mdss_hdmi_5v_active &mdss_hdmi_hpd_active
+			&mdss_hdmi_cec_active &mdss_hdmi_ddc_suspend>;
+	pinctrl-3 = <&mdss_hdmi_5v_active &mdss_hdmi_hpd_active
+			&mdss_hdmi_ddc_active &mdss_hdmi_cec_active>;
+	pinctrl-4 = <&mdss_hdmi_5v_suspend &mdss_hdmi_hpd_suspend
+			&mdss_hdmi_ddc_suspend &mdss_hdmi_cec_suspend>;
 };
 
 &mdss_hdmi_pll {
@@ -387,13 +367,12 @@
 };
 
 &mdss_dsi0 {
+	qcom,dsi-pref-prim-pan = <&dsi_jdi_fhd_r63452_cmd>;
 	pinctrl-names = "mdss_default", "mdss_sleep";
 	pinctrl-0 = <&mdss_dsi_active &mdss_te_active>;
 	pinctrl-1 = <&mdss_dsi_suspend &mdss_te_suspend>;
-
 	qcom,platform-reset-gpio = <&tlmm 94 0>;
 	qcom,platform-te-gpio = <&tlmm 10 0>;
-	qcom,dsi-pref-prim-pan = <&dsi_jdi_fhd_r63452_cmd>;
 };
 
 &mdss_dsi1 {
@@ -501,6 +480,26 @@
 	qcom,panel-supply-entries = <&dsi_panel_pwr_supply_lgd_td4322>;
 };
 
+&i2c_7 {
+	status = "okay";
+	qcom,smb138x@8 {
+		compatible = "qcom,i2c-pmic";
+		reg = <0x8>;
+		#address-cells = <2>;
+		#size-cells = <0>;
+		interrupt-parent = <&spmi_bus>;
+		interrupts = <0x0 0xd1 0x0 IRQ_TYPE_LEVEL_LOW>;
+		interrupt_names = "smb138x";
+		interrupt-controller;
+		#interrupt-cells = <3>;
+		qcom,periph-map = <0x10 0x11 0x12 0x13 0x14 0x16 0x36>;
+		smb138x_parallel_slave: qcom,smb138x-parallel-slave@1000 {
+			compatible = "qcom,smb138x-parallel-slave";
+			reg = <0x1000 0x700>;
+		};
+	};
+};
+
 &dsi_dual_sharp_1080_120hz_cmd {
 	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_wled";
 	qcom,mdss-dsi-bl-min-level = <1>;
@@ -515,9 +514,21 @@
 &pmi8998_haptics {
 	status = "okay";
 	qcom,wave-play-rate-us = <5000>;
-	qcom,vmax-mv = <2830>;
+	qcom,vmax-mv = <3248>;
 	qcom,wave-shape = "sine";
 	qcom,brake-pattern = [03 02 00 00];
+	qcom,brake-pattern-count = <9>;
+	qcom,disable_force_back_emf_delay;
+	qcom,vmax-overbrake-mv = <3596>;
+	qcom,brake-pattern-arry = [03 00 00 00
+	03 02 00 00
+	03 03 01 00
+	03 03 02 01
+	03 03 03 02
+	03 03 03 02
+	03 03 03 02
+	03 03 03 02
+	03 03 03 03];
 };
 
 &pm8998_vadc {
@@ -753,6 +764,12 @@
 		pinctrl-2 = <&rcv_id_no_pull>;
 	};
 
+	sn_fuse: snfuse@0x786134 {
+		compatible = "qcom,sn-fuse";
+		reg = <0x786134 0x4>;
+		reg-names = "sn-base";
+	};
+
 	gpio_keys {
 		compatible = "gpio-keys";
 		input-name = "gpio-keys";
@@ -793,6 +810,27 @@
 			gpio-key,wakeup;
 			debounce-interval = <15>;
 		};
+
+		/*
+		hall_key1 {
+			label = "hall_key1";
+			gpios = <&tlmm 123 0x01>;
+			linux,input-type = <5>;
+			linux,code = <19>;
+			gpio-key,wakeup;
+			debounce-interval = <15>;
+		};
+		*/
+
+	};
+
+	gpio_rf {
+		pinctrl-names = "tlmm_gpio_rf_active","tlmm_gpio_rf_suspend";
+		pinctrl-0 = <&gpio_rf_active>;
+		pinctrl-1 = <&gpio_rf_suspend>;
+		compatible = "gpio_rf";
+		gpios = <&tlmm 119 0x01>;
+		debounce-interval = <15>;
 	};
 
 	qcom,msm-dai-mi2s {
@@ -810,12 +848,15 @@
 	};
 
 	fingerprint_fpc {
+		status = "ok";
 		compatible = "fpc,fpc1020";
-
 		interrupt-parent = <&tlmm>;
 		interrupts = <121 0x0>;
-
+		fpc,gpio_rst    = <&tlmm 37 0x0>;
+		fpc,gpio_irq    = <&tlmm 121 0x0>;
 		vdd_ana-supply  = <&fp_vdd_vreg>;
+		/* fpc,enable-on-boot; */
+		/* fpc,enable-wakeup; */
 
 		pinctrl-names = "fpc1020_reset_reset",
 			"fpc1020_reset_active",
@@ -824,55 +865,20 @@
 		pinctrl-0 = <&msm_gpio_37>;
 		pinctrl-1 = <&msm_gpio_37_output_high>;
 		pinctrl-2 = <&msm_gpio_121>;
-
-		fpc,gpio_rst    = <&tlmm 37 0x0>;
-		fpc,gpio_irq    = <&tlmm 121 0x0>;
-
-		status = "ok";
 	};
 
 	fingerprint_goodix {
 		compatible = "goodix,fingerprint";
-
+		fp-gpio-reset = <&tlmm 37 0>;
+		fp-gpio-irq = <&tlmm 121 0>;
 		pinctrl-names = "pmx_fp_active", "pmx_fp_suspend";
 		pinctrl-0 = <&fp_active>;
 		pinctrl-1 = <&fp_suspend>;
-
 		clock-names = "iface_clk", "core_clk";
 		clocks = <&clock_gcc clk_gcc_blsp2_ahb_clk>,
-			 <&clock_gcc clk_gcc_blsp2_qup6_spi_apps_clk>;
-
-		fp-gpio-reset = <&tlmm 37 0>;
-		fp-gpio-irq = <&tlmm 121 0>;
-
+			<&clock_gcc clk_gcc_blsp2_qup6_spi_apps_clk>;
 		status = "ok";
 	};
-};
-
-&spi_2 {
-	spi-max-frequency = <19200000>;
-
-	status = "ok";
-
-	peel_ir@0 {
-		compatible = "peel_ir";
-		reg = <0>;
-
-		spi-max-frequency = <19200000>;
-
-		peel_ir,lr-gpio = <73>;
-		peel_ir,lr-gpio-valid = <1>;
-		peel_ir,spi-bpw = <32>;
-		peel_ir,spi-clk-speed= <960000>;
-		peel_ir,spi-mode = <0>;
-		peel_ir,peel-field = <2345>;
-
-		status = "ok";
-	};
-};
-
-&pcie0 {
-	status = "disabled";
 };
 
 &fp_vdd_vreg {
@@ -885,81 +891,170 @@
 	qcom,en-cabc;
 };
 
-&red_led { /* Notification LED */
+/* Red led was used for powersupply of White led */
+&red_led {
+	qcom,start-idx = <1>;
+	qcom,idx-len = <20>;
+	qcom,duty-pcts = [00 06 10 20 32 44 54 5e 64 64
+			64 5e 54 44 32 20 10 06 00 00];
+	qcom,lut-flags = <3>;
+	qcom,pause-lo = <0>;
+	qcom,pause-hi = <0>;
+	qcom,ramp-step-ms = <128>;
 	qcom,use-blink;
 	linux,name = "white";
 };
 
-&blue_led { /* Left button backlight */
-	linux,name = "button-backlight";
+/* Blue led was used for powersupply of left button key backlight */
+&blue_led {
+        linux,name = "button-backlight";
 };
 
-&green_led { /* Right button backlight */
-	linux,name = "button-backlight1";
+/* Green led was used for powersupply of right button key backlight */
+&green_led {
+        linux,name = "button-backlight1";
 };
-
 &pmi8998_charger {
-	qcom,usb-icl-ua = <3000000>;
+	qcom,usb-icl-ua = <2700000>;
 	qcom,fcc-max-ua = <3200000>;
+	qcom,fcc-low-temp-delta = <2875000>;
+	qcom,fcc-hot-temp-delta = <1600000>;
+	qcom,fcc-cool-temp-delta = <2225000>;
 	qcom,auto-recharge-soc;
+/*
+        qcom,step-soc-thresholds = <60 70 80 90>;
+        qcom,step-current-deltas = <0 (-200000) (-300000) (-400000) (-500000)>;
+*/
 
 	qcom,thermal-mitigation
 				= <1800000 1600000 1400000 1200000 1000000 1000000 1000000>;
 	qcom,thermal-mitigation-dcp
 				= <1800000 1600000 1400000 1200000 1000000 1000000 1000000>;
 	qcom,thermal-mitigation-qc3
-				= <3000000 2425000 2125000 1825000 1525000 1225000 925000>;
+				= <2700000 2425000 2125000 1825000 1525000 1225000 750000>;
 	qcom,thermal-mitigation-qc2
-				= <1600000 1400000 1200000 1000000 900000 900000 900000>;
+				= <1600000 1400000 1200000 1000000 900000 900000 550000>;
 };
-
 &pmi8998_fg {
-	qcom,fg-force-load-profile;
-	qcom,fg-sys-term-current = <(-300)>;
-	qcom,fg-chg-term-current = <200>;
-	qcom,fg-auto-recharge-soc;
-	qcom,fg-recharge-soc-thr = <99>;
-	qcom,fg-cutoff-voltage = <3400>;
-	qcom,fg-empty-voltage = <3100>;
-	qcom,fg-jeita-hyst-temp = <0>;
-	qcom,fg-jeita-thresholds = <0 15 45 60>;
-	qcom,fg-esr-clamp-mohms = <60>;
-	qcom,fg-batt-temp-delta = <6>;
+        qcom,fg-force-load-profile;
+        qcom,fg-sys-term-current = <(-300)>;
+        qcom,fg-chg-term-current = <200>;
+        qcom,fg-auto-recharge-soc;
+        qcom,fg-recharge-soc-thr = <99>;
+        qcom,fg-cutoff-voltage = <3400>;
+        qcom,fg-empty-voltage = <3100>;
+	qcom,fg-cutoff-current = <200>;
+        qcom,fg-jeita-hyst-temp = <0>;
+        qcom,fg-jeita-thresholds = <0 15 45 58>;
+        qcom,fg-esr-clamp-mohms = <60>;
+        qcom,fg-batt-temp-delta = <6>;
+	qcom,slope-limit-temp-threshold = <100>;
+	qcom,slope-limit-coeffs = <10 11 12 13>;
 };
-
 /{
 	mtp_batterydata: qcom,battery-data {
 		qcom,batt-id-range-pct = <15>;
-		#include "batterydata-sagit-atl-3350mAh.dtsi"
-		#include "batterydata-sagit-sdi-3440mAh.dtsi"
+		#include "batterydata-c1-atl-3350mAh.dtsi"
+		#include "batterydata-c1-sdi-3440mAh.dtsi"
 		#include "batterydata-itech-3020mAh.dtsi"
+	};
+};
+
+&soc {
+	thermal-message {
+		thermal,batt-array-size = "8";
+		thermal,batt-level-screen-on = "0 1 2 3 4 5 6 7";
+		thermal,batt-level-screen-off = "0 1 2 3 4 5 6 7";
 	};
 };
 
 &qusb_phy0 {
 	qcom,qusb-phy-init-seq =
-			/* <value reg_offset> */
-			<0x80 0x0
-			0x13 0x04
-			0x7c 0x18c
-			0x80 0x2c
-			0x0a 0x184
-			0xf0 0x23c
-			0x0d 0x240>;
+				/* <value reg_offset> */
+				<0x80 0x0
+				0x13 0x04
+				0x7c 0x18c
+				0x80 0x2c
+				0x0a 0x184
+				0xf0 0x23c
+				0x0d 0x240>;
 };
 
 &pmi8998_bob {
-	regulator-max-microvolt = <3800000>;
+        regulator-min-microvolt = <3312000>;
+        regulator-max-microvolt = <3800000>;
+        qcom,bob-pwm-threshold-current = <2000000>;
+        qcom,init-bob-mode = <2>;
+        status = "okay";
 };
-
 &pmi8998_bob_pin1 {
-	regulator-max-microvolt = <3800000>;
+        compatible = "qcom,rpm-smd-regulator";
+        regulator-name = "pm8998_bob_pin1";
+        qcom,set = <3>;
+        regulator-min-microvolt = <3312000>;
+        regulator-max-microvolt = <3800000>;
+        qcom,bob-pwm-threshold-current = <2000000>;
+        qcom,init-bob-mode = <2>;
+        qcom,use-pin-ctrl-voltage1;
 };
-
 &pmi8998_bob_pin2 {
-	regulator-max-microvolt = <3800000>;
+        compatible = "qcom,rpm-smd-regulator";
+        regulator-name = "pm8998_bob_pin2";
+        qcom,set = <3>;
+        regulator-min-microvolt = <3312000>;
+        regulator-max-microvolt = <3800000>;
+        qcom,bob-pwm-threshold-current = <2000000>;
+        qcom,init-bob-mode = <2>;
+        qcom,use-pin-ctrl-voltage2;
+};
+&pmi8998_bob_pin3 {
+        compatible = "qcom,rpm-smd-regulator";
+        regulator-name = "pm8998_bob_pin3";
+        qcom,set = <3>;
+        regulator-min-microvolt = <3312000>;
+        regulator-max-microvolt = <3800000>;
+        qcom,bob-pwm-threshold-current = <2000000>;
+        qcom,init-bob-mode = <2>;
+        qcom,use-pin-ctrl-voltage3;
 };
 
-&pmi8998_bob_pin3 {
-	regulator-max-microvolt = <3800000>;
+&spi_2 {
+        compatible = "qcom,spi-qup-v2";
+        #address-cells = <1>;
+        #size-cells = <0>;
+        reg-names = "spi_physical", "spi_bam_physical";
+        reg = <0xC176000 0x600>,
+        <0xC144000 0x25000>;
+        interrupt-names = "spi_irq", "spi_bam_irq";
+        interrupts = <0 96 0>, <0 238 0>;
+        spi-max-frequency = <19200000>;
+        qcom,use-bam;
+        qcom,ver-reg-exists;
+        qcom,bam-consumer-pipe-index = <8>;
+        qcom,bam-producer-pipe-index = <9>;
+        qcom,master-id = <86>;
+        qcom,use-pinctrl;
+        pinctrl-names = "spi_default", "spi_sleep";
+        pinctrl-0 = <&spi_2_active>;
+        pinctrl-1 = <&spi_2_sleep>;
+        clock-names = "iface_clk", "core_clk";
+        clocks = <&clock_gcc clk_gcc_blsp1_ahb_clk>,
+                <&clock_gcc clk_gcc_blsp1_qup2_spi_apps_clk>;
+        status = "ok";
+        peel_ir@0 {
+                compatible = "peel_ir";
+                reg = <0>;
+                spi-max-frequency = <19200000>;
+                peel_ir,lr-gpio = <73>;
+                peel_ir,lr-gpio-valid = <1>;
+                peel_ir,spi-bpw = <32>;
+                peel_ir,spi-clk-speed= <960000>;
+                peel_ir,spi-mode = <0>;
+                peel_ir,peel-field = <2345>;
+                status = "ok";
+        };
+};
+
+&pcie0 {
+        status = "disabled";
 };
