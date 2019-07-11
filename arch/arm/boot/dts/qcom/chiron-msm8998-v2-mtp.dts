@@ -15,7 +15,8 @@
 /dts-v1/;
 
 #include "msm8998-v2.dtsi"
-#include "chiron-msm8998-mtp.dtsi"
+#include "xiaomi/msm8998-v2.dtsi"
+#include "xiaomi/chiron-msm8998-mtp.dtsi"
 
 / {
 	model = "Qualcomm Technologies, Inc. MSM 8998 v2 MTP";

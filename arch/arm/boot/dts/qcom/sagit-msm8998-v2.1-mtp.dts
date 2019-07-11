@@ -15,7 +15,8 @@
 /dts-v1/;
 
 #include "msm8998-v2.1.dtsi"
-#include "sagit-msm8998-mtp.dtsi"
+#include "xiaomi/msm8998-v2.1.dtsi"
+#include "xiaomi/sagit-msm8998-mtp.dtsi"
 
 / {
 	model = "Qualcomm Technologies, Inc. MSM 8998 v2.1 MTP";
