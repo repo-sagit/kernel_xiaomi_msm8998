@@ -39,7 +39,6 @@
 #include <linux/regulator/consumer.h>
 #include <linux/slab.h>
 #include <linux/wakelock.h>
-#include <linux/hwinfo.h>
 #include <linux/notifier.h>
 #include <linux/fb.h>
 #include <linux/mdss_io_util.h>
@@ -493,7 +492,6 @@ static ssize_t device_prepare_set(struct device *dev,
 
 	} else if (!strncmp(buf, "disable", strlen("disable"))) {
 		rc = device_prepare(fpc1020, false);
-		update_hardware_info(TYPE_FP, 0);
 	} else {
 		return -EINVAL;
 	}
@@ -623,13 +621,6 @@ static struct attribute *attributes[] = {
 static const struct attribute_group attribute_group = {
 	.attrs = attributes,
 };
-
-static void notification_work(struct work_struct *work)
-{
-	mdss_prim_panel_fb_unblank(FP_UNLOCK_REJECTION_TIMEOUT);
-	pr_debug("unblank\n");
-}
-
 
 static irqreturn_t fpc1020_irq_handler(int irq, void *handle)
 {
@@ -803,7 +794,6 @@ static int fpc1020_probe(struct platform_device *pdev)
 	dev_info(dev, "%s: ok\n", __func__);
 	fpc1020->fb_black = false;
 	fpc1020->wait_finger_down = false;
-	INIT_WORK(&fpc1020->work, notification_work);
 	fpc1020->fb_notifier = fpc_notif_block;
 	fb_register_client(&fpc1020->fb_notifier);
 

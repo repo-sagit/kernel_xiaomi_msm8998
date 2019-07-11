@@ -127,12 +127,6 @@ static long gf_compat_ioctl(struct file *filp, unsigned int cmd, unsigned long a
 }
 #endif /*CONFIG_COMPAT*/
 
-static void notification_work(struct work_struct *work)
-{
-	mdss_prim_panel_fb_unblank(FP_UNLOCK_REJECTION_TIMEOUT);
-	pr_debug("unblank\n");
-}
-
 static irqreturn_t gf_irq(int irq, void *handle)
 {
 	struct gf_device *gf_dev = handle;
