@@ -2,7 +2,6 @@
  * platform indepent driver interface
  *
  * Coypritht (c) 2017 Goodix
- * Copyright (C) 2017 XiaoMi, Inc.
  */
 #include <linux/delay.h>
 #include <linux/workqueue.h>
@@ -23,6 +22,7 @@
 
 int gf_parse_dts(struct gf_dev *gf_dev)
 {
+
 	/*get reset resource*/
 	gf_dev->reset_gpio = of_get_named_gpio(gf_dev->spi->dev.of_node, "fp-gpio-reset", 0);
 	if (!gpio_is_valid(gf_dev->reset_gpio)) {
@@ -37,7 +37,24 @@ int gf_parse_dts(struct gf_dev *gf_dev)
 		pr_info("IRQ GPIO is invalid.\n");
 		return -EPERM;
 	}
+        /*
+        vreg = regulator_get(&gf_dev->spi->dev,"vdd_ana");
+	if(NULL == vreg){
 
+	pr_err("gf::vdd id get failed\n");
+	return 0;
+	}else {
+	int  rc = 0;
+	rc = regulator_set_voltage(vreg,2800000UL,2800000UL);
+	if(rc < 0){
+	pr_err("set voltage failed\n");
+	}
+	rc = regulator_enable(vreg);
+	if(rc < 0){
+	pr_err("enable voltage failed\n");
+	}
+	}
+	*/
 	return 0;
 }
 

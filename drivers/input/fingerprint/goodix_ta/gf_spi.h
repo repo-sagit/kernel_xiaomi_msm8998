@@ -2,7 +2,6 @@
  * driver definition for sensor driver
  *
  * Coypright (c) 2017 Goodix
- * Copyright (C) 2017 XiaoMi, Inc.
  */
 #ifndef __GF_SPI_H
 #define __GF_SPI_H
@@ -138,6 +137,8 @@ struct gf_dev {
 	struct notifier_block notifier;
 	char device_available;
 	char fb_black;
+	char wait_finger_down;
+	struct work_struct work;
 };
 
 int gf_parse_dts(struct gf_dev *gf_dev);

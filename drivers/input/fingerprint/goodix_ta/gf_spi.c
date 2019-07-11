@@ -1,7 +1,7 @@
 /*
  * TEE driver for goodix fingerprint sensor
  * Copyright (C) 2016 Goodix
- * Copyright (C) 2017 XiaoMi, Inc.
+ * Copyright (C) 2019 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  * GNU General Public License for more details.
  */
 #define pr_fmt(fmt)		KBUILD_MODNAME ": " fmt
-
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/ioctl.h>
@@ -42,6 +41,7 @@
 #include <linux/pm_qos.h>
 #include <linux/cpufreq.h>
 #include <linux/wakelock.h>
+#include <linux/mdss_io_util.h>
 
 #include "gf_spi.h"
 
@@ -55,6 +55,9 @@
 #define VER_MAJOR   1
 #define VER_MINOR   2
 #define PATCH_LEVEL 1
+
+#define WAKELOCK_HOLD_TIME 2000 /* in ms */
+#define FP_UNLOCK_REJECTION_TIMEOUT (WAKELOCK_HOLD_TIME - 500)
 
 #define GF_SPIDEV_NAME     "goodix,fingerprint"
 /*device name after register in charater*/
@@ -72,6 +75,7 @@ static LIST_HEAD(device_list);
 static DEFINE_MUTEX(device_list_lock);
 static struct wake_lock fp_wakelock;
 static struct gf_dev gf;
+
 
 struct gf_key_map maps[] = {
 	{ EV_KEY, GF_KEY_INPUT_HOME },
@@ -487,13 +491,31 @@ static long gf_compat_ioctl(struct file *filp, unsigned int cmd, unsigned long a
 }
 #endif /*CONFIG_COMPAT*/
 
+static void notification_work(struct work_struct *work)
+{
+	mdss_prim_panel_fb_unblank(FP_UNLOCK_REJECTION_TIMEOUT);
+	pr_debug("unblank\n");
+}
+
 static irqreturn_t gf_irq(int irq, void *handle)
 {
+	struct gf_dev *gf_dev = &gf;
 #if defined(GF_NETLINK_ENABLE)
 	char temp[4] = { 0x0 };
+	uint32_t key_input = 0;
 	temp[0] = GF_NET_EVENT_IRQ;
-	wake_lock_timeout(&fp_wakelock, msecs_to_jiffies(2*1000));
+	pr_debug("%s enter\n", __func__);
+	wake_lock_timeout(&fp_wakelock, msecs_to_jiffies(WAKELOCK_HOLD_TIME));
 	sendnlmsg(temp);
+	if ((gf_dev->wait_finger_down == true) && (gf_dev->device_available == 1) && (gf_dev->fb_black == 1)) {
+		key_input = KEY_RIGHT;
+		input_report_key(gf_dev->input, key_input, 1);
+		input_sync(gf_dev->input);
+		input_report_key(gf_dev->input, key_input, 0);
+		input_sync(gf_dev->input);
+		gf_dev->wait_finger_down = false;
+		schedule_work(&gf_dev->work);
+	}
 #elif defined (GF_FASYNC)
 	struct gf_dev *gf_dev = &gf;
 
@@ -640,6 +662,7 @@ static int goodix_fb_state_chg_callback(struct notifier_block *nb,
 		case FB_BLANK_POWERDOWN:
 			if (gf_dev->device_available == 1) {
 				gf_dev->fb_black = 1;
+				gf_dev->wait_finger_down = true;
 #if defined(GF_NETLINK_ENABLE)
 				temp[0] = GF_NET_EVENT_FB_BLACK;
 				sendnlmsg(temp);
@@ -699,6 +722,8 @@ static int gf_probe(struct platform_device *pdev)
 	gf_dev->pwr_gpio = -EINVAL;
 	gf_dev->device_available = 0;
 	gf_dev->fb_black = 0;
+	gf_dev->wait_finger_down = false;
+	INIT_WORK(&gf_dev->work, notification_work);
 
 	if (gf_parse_dts(gf_dev))
 		goto error_hw;
