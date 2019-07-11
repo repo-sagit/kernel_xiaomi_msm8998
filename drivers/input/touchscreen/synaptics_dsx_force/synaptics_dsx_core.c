@@ -5,7 +5,6 @@
  *
  * Copyright (C) 2012 Alexandra Chin <alexandra.chin@tw.synaptics.com>
  * Copyright (C) 2012 Scott Lin <scott.lin@tw.synaptics.com>
- * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +41,7 @@
 #include <linux/platform_device.h>
 #include <linux/regulator/consumer.h>
 #include <linux/input/synaptics_dsx.h>
+#include <linux/hwinfo.h>
 #include "synaptics_dsx_core.h"
 #ifdef KERNEL_ABOVE_2_6_38
 #include <linux/input/mt.h>
@@ -70,7 +70,6 @@
 
 #define WAKEUP_GESTURE false
 
-#define NO_0D_WHILE_2D
 #define REPORT_2D_Z
 #define REPORT_2D_W
 
@@ -769,7 +768,7 @@ static struct device_attribute attrs[] = {
 
 #if defined(CONFIG_SECURE_TOUCH)
 static DEVICE_ATTR(secure_touch_enable, (S_IRUGO | S_IWUSR | S_IWGRP), synaptics_secure_touch_enable_show, synaptics_secure_touch_enable_store);
-static DEVICE_ATTR(secure_touch, S_IRUGO, synaptics_secure_touch_show, NULL);
+static DEVICE_ATTR(secure_touch, S_IRUGO , synaptics_secure_touch_show, NULL);
 
 static int synaptics_secure_touch_clk_prepare_enable(
 		struct synaptics_rmi4_data *rmi4_data)
@@ -832,7 +831,7 @@ err_iface_clk:
 }
 static void synaptics_secure_touch_notify(struct synaptics_rmi4_data *data)
 {
-	sysfs_notify(&data->pdev->dev.parent->kobj, NULL, "secure_touch");
+        sysfs_notify(&data->pdev->dev.parent->kobj, NULL, "secure_touch");
 }
 static irqreturn_t synaptics_filter_interrupt(struct synaptics_rmi4_data *data)
 {
@@ -3939,7 +3938,7 @@ static int synaptics_rmi4_input_event(struct input_dev *dev,
 			"Set input event value = %d\n", value);
 
 		if (value >= INPUT_EVENT_START && value <= INPUT_EVENT_END) {
-			ms = (struct synaptics_rmi4_mode_switch *)kmalloc(sizeof(struct synaptics_rmi4_mode_switch),
+			ms = (struct synaptics_rmi4_mode_switch*)kmalloc(sizeof(struct synaptics_rmi4_mode_switch),
 					GFP_ATOMIC);
 			if (ms != NULL) {
 				ms->data = rmi4_data;
@@ -4925,6 +4924,7 @@ static int synaptics_rmi4_probe(struct platform_device *pdev)
 	rmi4_data->irq_enable = synaptics_rmi4_irq_enable;
 	rmi4_data->sleep_enable = synaptics_rmi4_sleep_enable;
 
+
 	mutex_init(&(rmi4_data->rmi4_reset_mutex));
 	mutex_init(&(rmi4_data->rmi4_report_mutex));
 	mutex_init(&(rmi4_data->rmi4_io_ctrl_mutex));
@@ -5428,6 +5428,75 @@ static void mdss_reset_ctrl(const struct synaptics_dsx_board_data *bdata, bool o
 			gpio_set_value(bdata->mdss_reset, !bdata->mdss_reset_state);
 	}
 }
+
+#if 0
+static void mdss_panel_poweron(struct synaptics_rmi4_data *rmi4_data, bool enable)
+{
+	if (!rmi4_data->hw_if->board_data->panel_is_incell)
+		return;
+
+	if (enable) {
+#if 0
+		/*disp regulator always on, so do not control this regulator*/
+		if (rmi4_data->panel_power_seq.disp_pre_on_sleep)
+			msleep(rmi4_data->panel_power_seq.disp_pre_on_sleep);
+		mdss_regulator_ctrl(rmi4_data, DISP_REG_VDD, true);
+		if (rmi4_data->panel_power_seq.disp_post_on_sleep)
+			msleep(rmi4_data->panel_power_seq.disp_post_on_sleep);
+#endif
+		if (rmi4_data->panel_power_seq.lab_pre_on_sleep)
+			msleep(rmi4_data->panel_power_seq.lab_pre_on_sleep);
+		mdss_regulator_ctrl(rmi4_data, DISP_REG_LAB, true);
+		if (rmi4_data->panel_power_seq.lab_post_on_sleep)
+			msleep(rmi4_data->panel_power_seq.lab_post_on_sleep);
+
+		if (rmi4_data->panel_power_seq.ibb_pre_on_sleep)
+			msleep(rmi4_data->panel_power_seq.ibb_pre_on_sleep);
+		mdss_regulator_ctrl(rmi4_data, DISP_REG_IBB, true);
+		if (rmi4_data->panel_power_seq.ibb_post_on_sleep)
+			msleep(rmi4_data->panel_power_seq.ibb_post_on_sleep);
+	} else {
+		if (rmi4_data->panel_power_seq.ibb_pre_off_sleep)
+			msleep(rmi4_data->panel_power_seq.ibb_pre_off_sleep);
+		mdss_regulator_ctrl(rmi4_data, DISP_REG_IBB, false);
+		if (rmi4_data->panel_power_seq.ibb_post_off_sleep)
+			msleep(rmi4_data->panel_power_seq.ibb_post_off_sleep);
+
+		if (rmi4_data->panel_power_seq.lab_pre_off_sleep)
+			msleep(rmi4_data->panel_power_seq.lab_pre_off_sleep);
+		mdss_regulator_ctrl(rmi4_data, DISP_REG_LAB, false);
+		if (rmi4_data->panel_power_seq.lab_post_off_sleep)
+			msleep(rmi4_data->panel_power_seq.lab_post_off_sleep);
+#if 0
+		/*disp regulator always on, so do not control this regulator*/
+		if (rmi4_data->panel_power_seq.disp_pre_off_sleep)
+			msleep(rmi4_data->panel_power_seq.disp_pre_off_sleep);
+		mdss_regulator_ctrl(rmi4_data, DISP_REG_VDD, false);
+		if (rmi4_data->panel_power_seq.disp_post_off_sleep)
+			msleep(rmi4_data->panel_power_seq.disp_post_off_sleep);
+#endif
+	}
+	pr_debug("power %s seq:\n", enable ? "on" : "off");
+#if 0
+	/*disp regulator always on, so do not control this regulator*/
+	pr_debug("IOVDD: preonsleep=%d,postonsleep=%d,preoffsleep=%d,postoffsleep=%d\n",
+			rmi4_data->panel_power_seq.disp_pre_on_sleep,
+			rmi4_data->panel_power_seq.disp_post_on_sleep,
+			rmi4_data->panel_power_seq.disp_pre_off_sleep,
+			rmi4_data->panel_power_seq.disp_post_off_sleep);
+#endif
+	pr_debug("LAB: preonsleep=%d,postonsleep=%d,preoffsleep=%d,postoffsleep=%d\n",
+			rmi4_data->panel_power_seq.lab_pre_on_sleep,
+			rmi4_data->panel_power_seq.lab_post_on_sleep,
+			rmi4_data->panel_power_seq.lab_pre_off_sleep,
+			rmi4_data->panel_power_seq.lab_post_off_sleep);
+	pr_debug("IBB: preonsleep=%d,postonsleep=%d,preoffsleep=%d,postoffsleep=%d\n",
+			rmi4_data->panel_power_seq.ibb_pre_on_sleep,
+			rmi4_data->panel_power_seq.ibb_post_on_sleep,
+			rmi4_data->panel_power_seq.ibb_pre_off_sleep,
+			rmi4_data->panel_power_seq.ibb_post_off_sleep);
+}
+#endif
 
 static void mdss_reset_action(const struct synaptics_dsx_board_data *bdata)
 {
