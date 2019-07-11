@@ -42,7 +42,6 @@
 #include <linux/platform_device.h>
 #include <linux/regulator/consumer.h>
 #include <linux/input/synaptics_dsx.h>
-#include <linux/hwinfo.h>
 #include "synaptics_dsx_core.h"
 #ifdef KERNEL_ABOVE_2_6_38
 #include <linux/input/mt.h>
@@ -5642,60 +5641,6 @@ static int synaptics_rmi4_fb_notifier_cb(struct notifier_block *self,
 		bdata = rmi4_data->hw_if->board_data;
 	else
 		return 0;
-
-	/* Receive notifications from primary panel only */
-	if (evdata && evdata->data && rmi4_data && mdss_panel_is_prim(evdata->info)) {
-		if (event == FB_EVENT_BLANK) {
-			transition = evdata->data;
-			if ((*transition == FB_BLANK_POWERDOWN) || (*transition == FB_BLANK_NORMAL)) {
-				synaptics_rmi4_suspend(&rmi4_data->pdev->dev);
-				rmi4_data->fb_ready = false;
-			} else if ((*transition == FB_BLANK_UNBLANK) || (*transition == FB_BLANK_NORMAL)) {
-				synaptics_rmi4_resume(&rmi4_data->pdev->dev);
-				rmi4_data->fb_ready = true;
-				if (rmi4_data->wakeup_en) {
-					mdss_panel_reset_skip_enable(false);
-					mdss_regulator_ctrl(rmi4_data, DISP_REG_ALL, false);
-					mdss_dsi_ulps_suspend_enable(false);
-					mdss_dsi_ulps_enable(false);
-					rmi4_data->wakeup_en = false;
-				}
-
-#ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_DSX_TEST_REPORTING_FORCE
-				rmi4_data->disable_data_dump = false;
-#endif
-			}
-		} else if (event == FB_EARLY_EVENT_BLANK) {
-			transition = evdata->data;
-			if ((*transition == FB_BLANK_POWERDOWN) || (*transition == FB_BLANK_NORMAL)) {
-#ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_DSX_TEST_REPORTING_FORCE
-				rmi4_data->disable_data_dump = true;
-				if (rmi4_data->dump_flags) {
-					reinit_completion(&rmi4_data->dump_completion);
-					wait_for_completion_timeout(&rmi4_data->dump_completion, 4 * HZ);
-				}
-#endif
-				if (rmi4_data->enable_wakeup_gesture) {
-					rmi4_data->wakeup_en = true;
-					mdss_regulator_ctrl(rmi4_data, DISP_REG_ALL, true);
-					mdss_panel_reset_skip_enable(true);
-					pr_debug("Enable suspend ulps\n");
-					mdss_dsi_ulps_enable(true);
-					mdss_dsi_ulps_suspend_enable(true);
-
-				}
-			} else if ((*transition == FB_BLANK_UNBLANK) || (*transition == FB_BLANK_NORMAL)) {
-				if (bdata->reset_gpio >= 0 && rmi4_data->suspend) {
-					gpio_set_value(bdata->reset_gpio, bdata->reset_on_state);
-					msleep(bdata->reset_active_ms);
-					gpio_set_value(bdata->reset_gpio, !bdata->reset_on_state);
-				}
-				if (rmi4_data->wakeup_en) {
-					mdss_reset_action(bdata);
-				}
-			}
-		}
-	}
 
 	return 0;
 }
